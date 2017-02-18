@@ -57,7 +57,6 @@ var app = {
     var tempUsername = message.username;
     var $inputUsername = $('<div class = \'' + message.username + '\'>' + message.username + '</div>');
     // $('#chats').append('<div>' + inputUsername + '</div>');
-    // debugger;
     $('#chats').append($inputUsername);
     // debugger;
     // $('\'.' + message.username + '\'').click(function() { console.log( message.username ); } );
