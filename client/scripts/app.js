@@ -92,10 +92,12 @@ var app = {
     }
   },
   renderMessage: function(message) {
+    var $chat = $('<div class = chat></div>');
+    $('#chats').append($chat);
     var tempUsername = message.username;
     var $inputUsername = $('<div class = \'' + 'username' + ' ' + message.username + '\' >' + message.username + '</div>');
-    $('#chats').append($inputUsername);
-    $inputUsername.append('<div class = message \'' + message.username + '\'>' + message.text + '</div>');
+    $chat.append($inputUsername);
+    $chat.append('<div class = \'' + 'message' + ' ' + message.username + '\'>' + message.text + '</div>');
     $inputUsername.click(function() { 
       console.log( message.username ); 
       app.handleUsernameClick();
