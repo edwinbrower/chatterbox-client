@@ -7,22 +7,27 @@
 
 var app = {
   init: function() {
-    $(document).ready(function() {
-      $('#send').submit(function(event) {
-        event.preventDefault();
-        var enteredText = $('#message').val();
-        console.log(enteredText);
-        var message = {
-          roomname: 'lobby',
-          text: enteredText,
-          username: 'dan'
-        };
-        // app.send($('#message').val());
-        app.handleSubmit();
+    var executed = false;
+    // inside if false then true
+    return function () {
+      $(document).ready(function() {
+        $('#send').submit(function(event) {
+          event.preventDefault();
+          var enteredText = $('#message').val();
+          console.log(enteredText);
+          var message = {
+            roomname: 'lobby',
+            text: enteredText,
+            username: 'dan'
+          };
+          console.log('hi');
+          // app.send($('#message').val());
+          app.handleSubmit();
+        });
       });
-    });
-    
-    app.fetch();
+      
+      app.fetch();
+    };
     // setTimeout( (function() {
     //   console.log('input value :' + $('#message').value);
     // }), 1000);
@@ -81,8 +86,9 @@ var app = {
   },
   renderMessage: function(message) {
     var tempUsername = message.username;
-    var $inputUsername = $('<div class = username \'' + message.username + '\'>' + message.username + '</div>');
+    var $inputUsername = $('<div class = username ' + message.username + '>' + message.username + '</div>');
     $('#chats').append($inputUsername);
+    $inputUsername.append('<div class = message \'' + message.username + '\'>' + message.text + '</div>');
     $inputUsername.click(function() { 
       console.log( message.username ); 
       app.handleUsernameClick();
@@ -102,4 +108,4 @@ var app = {
   friendList: {}
 };
 
-app.init();
+app.init()();
