@@ -6,11 +6,15 @@
 // });
 
 var app = {
+  username: 'blank',
   init: function() {
     // var executed = false;
     // inside if false then true
     return function () {
       $(document).ready(function() {
+        app.username = window.location.search;
+        app.username = app.username.slice(app.username.indexOf('=') + 1);
+        console.log(app.username);  
         $('#send').submit(function(event) {
           event.preventDefault();
           var enteredText = $('#message').val();
@@ -18,16 +22,17 @@ var app = {
           var message = {
             roomname: 'lobby',
             text: enteredText,
-            username: 'dan'
+            username: app.username
           };
-          console.log('hi');
-          // app.send($('#message').val());
-          app.handleSubmit();
+          app.handleSubmit(message);
         });
       });
-      
       app.fetch();
+      setInterval(function() {
+        app.fetch();
+      }, 15000);
     };
+    // console.log(app.name);
     // setTimeout( (function() {
     //   console.log('input value :' + $('#message').value);
     // }), 1000);
@@ -45,6 +50,7 @@ var app = {
       data: JSON.stringify(message),
       contentType: 'application/json',
       success: function (data) {
+        app.storage.push(message);
         console.log('chatterbox: Message sent');
       },
       error: function (data) {
@@ -65,6 +71,7 @@ var app = {
         // console.log(app.storage.room1[0]);
         // console.log(JSON.stringify(app.storage));
         console.log(app.storage);
+        app.clearMessages();
         app.sortMessages();
       },
       error: function (data) {
@@ -86,7 +93,7 @@ var app = {
   },
   renderMessage: function(message) {
     var tempUsername = message.username;
-    var $inputUsername = $('<div class = username ' + message.username + '>' + message.username + '</div>');
+    var $inputUsername = $('<div class = \'' + 'username' + ' ' + message.username + '\' >' + message.username + '</div>');
     $('#chats').append($inputUsername);
     $inputUsername.append('<div class = message \'' + message.username + '\'>' + message.text + '</div>');
     $inputUsername.click(function() { 
@@ -102,8 +109,8 @@ var app = {
   handleUsernameClick: function() {
     // called: false
   },
-  handleSubmit: function () {
-
+  handleSubmit: function (message) {
+    app.send(message);
   },
   friendList: {}
 };
