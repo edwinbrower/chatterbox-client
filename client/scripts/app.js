@@ -9,13 +9,16 @@ var app = {
   username: 'blank',
   rooms: {},
   init: function() {
+
     // var executed = false;
     // inside if false then true
-    return function () {
+    return function() {
       $(document).ready(function() {
         app.username = window.location.search;
         app.username = app.username.slice(app.username.indexOf('=') + 1);
-        console.log(app.username);  
+        // $('#createRoom').submit(function(event) {
+        //   console.log('creating ROOM');
+        // });
         $('#send').submit(function(event) {
           event.preventDefault();
           var enteredText = $('#message').val();
@@ -28,10 +31,11 @@ var app = {
           app.handleSubmit(message);
         });
       });
+
       app.fetch();
       setInterval(function() {
         app.fetch();
-      }, 12000);
+      }, 10000);
     };
     // console.log(app.name);
     // setTimeout( (function() {
@@ -64,10 +68,16 @@ var app = {
     $.ajax({
       url: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
       type: 'GET',
-      data: 'order=-createdAt',
+      // data: 'order=-createdAt',
       contentType: 'application/json',
       success: function (data) {
         app.storage = data.results;
+        var message = {
+            roomname: 'test',
+            text: 'enteredText',
+            username: app.username
+          };
+          app.storage.push(message);
         // console.log('chatterbox: Message Fetched');
         // console.log(app.storage);
         app.clearMessages();
@@ -84,7 +94,6 @@ var app = {
     $('#chats').children().remove();
   },
   sortMessages: function() {
-
     for (var i = 0; i < app.storage.length; i++) {
       var chatmessage = app.storage[i];  // will sort later
       app.renderRoom(chatmessage);
@@ -92,12 +101,21 @@ var app = {
     }
   },
   renderMessage: function(message) {
-    var $chat = $('<div class = chat></div>');
+    var $chat = $('<div class = \'' + 'chat ' + message.roomname + '\'></div>');
+    // var $chat = $('<div class = chat></div>');
     var $inputUsername = $('<div class = \'' + 'username' + ' ' + message.username + '\' >' + message.username + '</div>');
     if (!app.detectHax(message)) {
-      $('#chats').append($chat);
-      $chat.append($inputUsername);
-      $chat.append('<div class = \'' + 'message' + ' ' + message.username + '\'>' + message.text + '</div>');
+      // for all room names
+      // for (var room in app.rooms) {
+        // if room name class
+        // if ($chat.hasClass('\'' + room + '\'')) {  
+          // then do the apending for that room.. so the code below should be here.
+          // i need to look at select more 
+          $('#chats').append($chat);
+          $chat.append($inputUsername);
+          $chat.append('<div class = \'' + 'message' + ' ' + message.username + '\'>' + message.text + '</div>');
+        // }
+      // }
     }
     $inputUsername.click(function() { 
       console.log( message.username ); 
@@ -111,13 +129,15 @@ var app = {
     if (!app.detectHax(message)) {
       if (!(room in app.rooms)) {
         app.rooms[room] = true;
-        $room = $('<option id = \"' + room + '\">' + room + '</option>');
+        $room = $('<option class = \"' + room + '\">' + room + '</option>');
         $('#roomSelect').append($room);
-      }
+      } 
     }
   },
   handleUsernameClick: function() {
-    // called: false
+    //// we need to get class of clicked username
+    // add it to friends list
+    // bold those in friends list
   },
   handleSubmit: function (message) {
     app.send(message);
@@ -131,15 +151,10 @@ var app = {
         hacked = true;
         return;
       }
-      // if (part === '') {
-      //   hacked = true;
-      //   return;
-      // }
-      if (part[0] === '<') {
+      if (part[0] === '<' || part[0] === '%' || part.includes('script') ) {
         hacked = true;
         return;
       }
-      
     };
     detectHaxForPart(message.username);
     detectHaxForPart(message.text);
