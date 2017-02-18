@@ -7,7 +7,7 @@
 
 var app = {
   init: function() {
-    var executed = false;
+    // var executed = false;
     // inside if false then true
     return function () {
       $(document).ready(function() {
