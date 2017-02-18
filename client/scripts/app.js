@@ -1,10 +1,33 @@
-// YOUR CODE HERE:
+// // YOUR CODE HERE:
+// $(document).ready(function() {
+//   $().click(function() {
+
+//   });
+// });
+
 var app = {
   init: function() {
+    $(document).ready(function() {
+      $('#send').submit(function(event) {
+        event.preventDefault();
+        var enteredText = $('#message').val();
+        console.log(enteredText);
+        var message = {
+          roomname: 'lobby',
+          text: enteredText,
+          username: 'dan'
+        };
+        // app.send($('#message').val());
+        app.handleSubmit();
+      });
+    });
+    
     app.fetch();
-    setTimeout( (function() {
-      console.log('input value :' + $('#message').value);
-    }), 1000);
+    // setTimeout( (function() {
+    //   console.log('input value :' + $('#message').value);
+    // }), 1000);
+    // console.log('input value :' + $('#message').val);
+
     // console.log(app.storage);
     // return true;
   },
@@ -64,6 +87,8 @@ var app = {
       console.log( message.username ); 
       app.handleUsernameClick();
     } );
+    // console.log('input value :' + $('#message').val);
+
   },
   renderRoom: function(id) {
     $('#roomSelect').append('<div id = \"' + id + '\"></div>');
