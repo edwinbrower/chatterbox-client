@@ -7,6 +7,7 @@
 
 var app = {
   username: 'blank',
+  rooms: {},
   init: function() {
     // var executed = false;
     // inside if false then true
@@ -20,7 +21,7 @@ var app = {
           var enteredText = $('#message').val();
           console.log(enteredText);
           var message = {
-            roomname: 'lobby',
+            roomname: 'test',
             text: enteredText,
             username: app.username
           };
@@ -30,7 +31,7 @@ var app = {
       app.fetch();
       setInterval(function() {
         app.fetch();
-      }, 15000);
+      }, 12000);
     };
     // console.log(app.name);
     // setTimeout( (function() {
@@ -63,14 +64,12 @@ var app = {
     $.ajax({
       url: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
       type: 'GET',
-      // data: JSON.stringify(message),
+      data: 'order=-createdAt',
       contentType: 'application/json',
       success: function (data) {
         app.storage = data.results;
-        console.log('chatterbox: Message Fetched');
-        // console.log(app.storage.room1[0]);
-        // console.log(JSON.stringify(app.storage));
-        console.log(app.storage);
+        // console.log('chatterbox: Message Fetched');
+        // console.log(app.storage);
         app.clearMessages();
         app.sortMessages();
       },
@@ -88,16 +87,18 @@ var app = {
 
     for (var i = 0; i < app.storage.length; i++) {
       var chatmessage = app.storage[i];  // will sort later
+      app.renderRoom(chatmessage);
       app.renderMessage(chatmessage);
     }
   },
   renderMessage: function(message) {
     var $chat = $('<div class = chat></div>');
-    $('#chats').append($chat);
-    var tempUsername = message.username;
     var $inputUsername = $('<div class = \'' + 'username' + ' ' + message.username + '\' >' + message.username + '</div>');
-    $chat.append($inputUsername);
-    $chat.append('<div class = \'' + 'message' + ' ' + message.username + '\'>' + message.text + '</div>');
+    if (!app.detectHax(message)) {
+      $('#chats').append($chat);
+      $chat.append($inputUsername);
+      $chat.append('<div class = \'' + 'message' + ' ' + message.username + '\'>' + message.text + '</div>');
+    }
     $inputUsername.click(function() { 
       console.log( message.username ); 
       app.handleUsernameClick();
@@ -105,8 +106,15 @@ var app = {
     // console.log('input value :' + $('#message').val);
 
   },
-  renderRoom: function(id) {
-    $('#roomSelect').append('<div id = \"' + id + '\"></div>');
+  renderRoom: function(message) {
+    var room = message.roomname;
+    if (!app.detectHax(message)) {
+      if (!(room in app.rooms)) {
+        app.rooms[room] = true;
+        $room = $('<option id = \"' + room + '\">' + room + '</option>');
+        $('#roomSelect').append($room);
+      }
+    }
   },
   handleUsernameClick: function() {
     // called: false
@@ -114,7 +122,31 @@ var app = {
   handleSubmit: function (message) {
     app.send(message);
   },
-  friendList: {}
+  friendList: {},
+  detectHax: function (message) {
+    var hacked = false;
+    var detectHaxForPart = function(part) {
+      console.log(part);
+      if (part === undefined || part === null || part === '') {
+        hacked = true;
+        return;
+      }
+      // if (part === '') {
+      //   hacked = true;
+      //   return;
+      // }
+      if (part[0] === '<') {
+        hacked = true;
+        return;
+      }
+      
+    };
+    detectHaxForPart(message.username);
+    detectHaxForPart(message.text);
+    detectHaxForPart(message.roomname);
+    return hacked;
+  }
 };
 
 app.init()();
+

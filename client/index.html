@@ -17,7 +17,6 @@
         }
         newSearch += 'username=' + (prompt('What is your name?') || 'anonymous');
         window.location.search = newSearch;
-        // app.name = newSearch;
       }
     </script>
     <!-- your scripts -->
@@ -27,10 +26,8 @@
   <body>
     <div id="main">
       <h1>chatterbox</h1>
-      <!--<input type = 'text' id = "inputBox" value = '10'>
-      <button>Submit</button> -->
       <p>Select a room</p>
-      <select id = "Room Selector"></select>
+      <select id = "roomSelect"></select>
       <form action="#" id="send" method="post">
         <input type="text" name="message" id="message"/>
         <input type="submit" name="submit" class="submit"/>
