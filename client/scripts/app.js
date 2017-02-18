@@ -2,6 +2,9 @@
 var app = {
   init: function() {
     app.fetch();
+    setTimeout( (function() {
+      console.log('input value :' + $('#message').value);
+    }), 1000);
     // console.log(app.storage);
     // return true;
   },
@@ -48,33 +51,25 @@ var app = {
   },
   sortMessages: function() {
 
-    for (var i = 0; i < 16; i++) {
+    for (var i = 0; i < app.storage.length; i++) {
       var chatmessage = app.storage[i];  // will sort later
       app.renderMessage(chatmessage);
     }
   },
   renderMessage: function(message) {
     var tempUsername = message.username;
-    var $inputUsername = $('<div class = \'' + message.username + '\'>' + message.username + '</div>');
-    // $('#chats').append('<div>' + inputUsername + '</div>');
+    var $inputUsername = $('<div class = username \'' + message.username + '\'>' + message.username + '</div>');
     $('#chats').append($inputUsername);
-    // debugger;
-    // $('\'.' + message.username + '\'').click(function() { console.log( message.username ); } );
-    $inputUsername.click(function() { console.log( message.username ); } );
-
-    // document.addEventListener('click', )
-    // console.log(document.getElementsByClassName('testt'));
-    // document.getElementsByClassName('testt').addEventListener('click', function() { console.log('hello'); } );
-    // $userchat[0].addEventListener('click', function() { console.log('hello'); } );
-    //$userchat.append( '<div>' + message.text + '</div>');
-    // console.log($userchat);
-
+    $inputUsername.click(function() { 
+      console.log( message.username ); 
+      app.handleUsernameClick();
+    } );
   },
   renderRoom: function(id) {
     $('#roomSelect').append('<div id = \"' + id + '\"></div>');
   },
   handleUsernameClick: function() {
-    
+    // called: false
   },
   handleSubmit: function () {
 
