@@ -7,7 +7,9 @@
 
 var app = {
   username: 'blank',
-  rooms: {},
+  rooms: {
+    lobby: true
+  },
   init: function() {
     return function() {
       $(document).ready(function() {
@@ -76,39 +78,46 @@ var app = {
   },
   sortMessages: function() {
     for (var i = 0; i < app.storage.length; i++) {
-      var chatmessage = app.storage[i];  // will sort later
-      app.renderRoom(chatmessage);
-      app.renderMessage(chatmessage);
+      var chatmessage = app.storage[i];
+      if (!app.detectHax(chatmessage)) {
+        app.renderRoom(chatmessage.roomname);
+        app.renderMessage(chatmessage);
+      }
     }
   },
   renderMessage: function(message) {
     var $chat = $('<div class = \'' + 'chat ' + message.roomname + '\'></div>');
+    if (message.username in app.friendList) {
+      $chat.addClass('friend');
+    }
     var $inputUsername = $('<div class = \'' + 'username' + ' ' + message.username + '\' >' + message.username + '</div>');
-    if (!app.detectHax(message)) {
-      room = $('#roomSelect').select().val();
-      if ($chat.hasClass(room)) {  
-        $('#chats').append($chat);
-        $chat.append($inputUsername);
-        $chat.append('<div class = \'' + 'message' + ' ' + message.username + '\'>' + message.text + '</div>');
-      }
+    room = $('#roomSelect').select().val() || 'lobby';
+    if ($chat.hasClass(room)) {  
+      $('#chats').append($chat);
+      $chat.append($inputUsername);
+      $chat.append('<div class = message>' + message.text + '</div>');
     }
     $inputUsername.click(function() { 
       console.log( message.username ); 
-      app.handleUsernameClick();
+      app.handleUsernameClick(message.username);
     } );
   },
-  renderRoom: function(message) {
-    var room = message.roomname;
-    if (!app.detectHax(message)) {
-      if (!(room in app.rooms)) {
-        app.rooms[room] = true;
-        $room = $('<option class = \"' + room + '\">' + room + '</option>');
-        $('#roomSelect').append($room);
-      } 
-    }
+  renderRoom: function(room) {
+    if (!(room in app.rooms)) {
+      app.rooms[room] = true;
+      $room = $('<option class = \"' + room + '\">' + room + '</option>');
+      $('#roomSelect').append($room);
+    } 
   },
-  handleUsernameClick: function() {
-  
+  handleUsernameClick: function(username) {
+    if (username in app.friendList) {
+      var userclass = '.' + username;
+      var $parent = $(userclass).parent();
+      $parent.removeClass('friend');
+      delete app.friendList[username];
+    } else {
+      app.friendList[username] = true;
+    }
   },
   handleSubmit: function (message) {
     app.send(message);
