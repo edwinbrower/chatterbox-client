@@ -15,14 +15,17 @@ var app = {
       $(document).ready(function() {
         app.username = window.location.search;
         app.username = app.username.slice(app.username.indexOf('=') + 1);
-        // $('#createRoom').submit(function(event) {
-        //   console.log('creating ROOM');
-        // });
+        $('#createRoomForm').submit(function(event) {
+          event.preventDefault();
+          var newRoom = $('#roomid').val();
+          app.renderRoom(newRoom);  
+        });
         $('#send').submit(function(event) {
           event.preventDefault();
           var enteredText = $('#message').val();
           console.log(enteredText);
           var room = $('#roomSelect').select().val();
+          console.log(room);
           var message = {
             roomname: room,
             text: enteredText,
